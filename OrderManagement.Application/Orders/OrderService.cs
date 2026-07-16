@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using OrderManagement.Domain.Common;
 using OrderManagement.Domain.Orders;
 
 namespace OrderManagement.Application.Orders;
@@ -11,12 +12,14 @@ public sealed class OrderService
 {
     private readonly IOrderRepository _orders;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IDomainEventDispatcher domainEventDispatcher;
     private readonly ILogger<OrderService> _logger;
 
-    public OrderService(IOrderRepository orders, IUnitOfWork unitOfWork, ILogger<OrderService> logger)
+    public OrderService(IOrderRepository orders, IUnitOfWork unitOfWork, IDomainEventDispatcher domainEventDispatcher , ILogger<OrderService> logger)
     {
         _orders = orders;
         _unitOfWork = unitOfWork;
+        this.domainEventDispatcher = domainEventDispatcher;
         _logger = logger;
     }
 
@@ -110,8 +113,19 @@ public sealed class OrderService
         _orders.Update(order);
         await _unitOfWork.SaveChangesAsync(ct);
 
-        foreach (var domainEvent in order.DomainEvents)
-            _logger.LogInformation("Domain event: {Event}", domainEvent);
+        try
+        {
+            await domainEventDispatcher.DispatchAsync(order.DomainEvents, ct);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "One or more domain event handlers failed for order {OrderId}", order.Id);
+            throw;
+        }
+        finally
+        {
+            order.ClearDomainEvents();
+        }
 
         order.ClearDomainEvents();
     }
