@@ -9,7 +9,7 @@ namespace OrderManagement.Domain.Common;
 // This is where invariants are enforced and domain events are collected so
 // that infrastructure (or an in-process mediator) can dispatch them after the
 // transaction commits.
-public abstract class AggregateRoot<TId> : Entity<TId> where TId : notnull
+public abstract class AggregateRoot<TId> : Entity<TId>, IHasDomainEvents where TId : notnull
 {
     private readonly List<IDomainEvent> _domainEvents = new();
     public IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();

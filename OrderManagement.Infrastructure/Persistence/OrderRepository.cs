@@ -11,7 +11,7 @@ public sealed class OrderRepository : IOrderRepository
 
     public async Task<Order?> GetByIdAsync(OrderId id, CancellationToken ct = default) =>
         await _context.Orders
-            .Include("_items") // load the owned collection via its backing field
+            .Include(x => x.Items) // load the owned collection via its backing field
             .FirstOrDefaultAsync(o => o.Id == id, ct);
 
     public async Task AddAsync(Order order, CancellationToken ct = default) =>

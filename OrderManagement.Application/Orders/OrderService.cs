@@ -124,10 +124,10 @@ public sealed class OrderService
         }
         finally
         {
-            order.ClearDomainEvents();
+            //order.ClearDomainEvents();
         }
 
-        order.ClearDomainEvents();
+        //order.ClearDomainEvents();
     }
 
     private static OrderDto ToDto(Order order) => new(
