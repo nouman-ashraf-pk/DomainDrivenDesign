@@ -111,21 +111,22 @@ public sealed class OrderService
     private async Task PersistAndDispatch(Order order, CancellationToken ct)
     {
         _orders.Update(order);
+        var events = order.DomainEvents.ToList(); // snapshot before SaveChanges clears it
         await _unitOfWork.SaveChangesAsync(ct);
 
         try
         {
-            await domainEventDispatcher.DispatchAsync(order.DomainEvents, ct);
+            await domainEventDispatcher.DispatchAsync(events, ct);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "One or more domain event handlers failed for order {OrderId}", order.Id);
             throw;
         }
-        finally
-        {
-            //order.ClearDomainEvents();
-        }
+        //finally
+        //{
+        //    order.ClearDomainEvents();
+        //}
 
         //order.ClearDomainEvents();
     }
