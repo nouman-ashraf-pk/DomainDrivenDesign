@@ -8,3 +8,9 @@ public interface IDomainEventDispatcher
 {
     Task DispatchAsync(IEnumerable<IDomainEvent> domainEvents, CancellationToken ct = default);
 }
+
+public interface IIntegrationEventDispatcher
+{
+    Task DispatchAsync(IEnumerable<IIntegrationEvent> integrationEvents, CancellationToken ct = default);
+}
+

@@ -52,3 +52,20 @@ public sealed class DomainEventDispatcher : IDomainEventDispatcher
         }
     }
 }
+
+public sealed class RabbitMqIntegrationEventDispatcher : IIntegrationEventDispatcher
+{
+    private readonly IServiceProvider _serviceProvider;
+    private readonly ILogger<RabbitMqIntegrationEventDispatcher> _logger;
+
+    public RabbitMqIntegrationEventDispatcher(IServiceProvider serviceProvider, ILogger<RabbitMqIntegrationEventDispatcher> logger)
+    {
+        _serviceProvider = serviceProvider;
+        _logger = logger;
+    }
+    // publishes to an exchange, handles connection/channel lifecycle, etc.
+    public Task DispatchAsync(IEnumerable<IIntegrationEvent> integrationEvent, CancellationToken ct = default)
+    {
+        throw new NotImplementedException();
+    }
+}

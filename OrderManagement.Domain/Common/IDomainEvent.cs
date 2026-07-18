@@ -7,3 +7,11 @@ public interface IDomainEvent
 {
     DateTime OccurredOn { get; }
 }
+
+
+// Application layer (or a new Integration namespace) — crosses process boundaries
+public interface IIntegrationEvent
+{
+    Guid Id { get; }
+    DateTime OccurredOn { get; }
+}

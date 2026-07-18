@@ -34,7 +34,7 @@ public sealed class OutboxMessage
 
     private OutboxMessage() { } // EF Core
 
-    public OutboxMessage(IDomainEvent domainEvent)
+    public OutboxMessage(IIntegrationEvent domainEvent)
     {
         Id = Guid.NewGuid();
         Type = domainEvent.GetType().FullName!;
@@ -42,10 +42,10 @@ public sealed class OutboxMessage
         OccurredOn = domainEvent.OccurredOn;
     }
 
-    public IDomainEvent Deserialize()
+    public IIntegrationEvent Deserialize()
     {
         var eventType = DomainEventTypeResolver.Resolve(Type);
-        return (IDomainEvent)JsonSerializer.Deserialize(Payload, eventType)!;
+        return (IIntegrationEvent)JsonSerializer.Deserialize(Payload, eventType)!;
     }
 
     public void MarkProcessed() => ProcessedOn = DateTime.UtcNow;

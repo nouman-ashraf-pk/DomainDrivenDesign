@@ -3,6 +3,8 @@ using OrderManagement.Application.Orders;
 using OrderManagement.Application.Events;
 using OrderManagement.Domain.Orders;
 using OrderManagement.Infrastructure.Persistence;
+using OrderManagement.Infrastructure.Outbox;
+using OrderManagement.Domain.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,10 +18,14 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Default")
-        ?? "Server=localhost\\SQLEXPRESS;Database=OrderManagement;Trusted_Connection=True;TrustServerCertificate=True;"));
+        ?? "Server=DESKTOP-4FOGMAU;Database=OrderManagement;Trusted_Connection=True;TrustServerCertificate=True;"));
 
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IIntegrationEventPublisher, OutboxIntegrationEventPublisher>();
 builder.Services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<AppDbContext>());
+builder.Services.AddScoped<IIntegrationEventDispatcher, RabbitMqIntegrationEventDispatcher>();
+builder.Services.AddHostedService<OutboxProcessor>();
+
 builder.Services.AddScoped<OrderService>();
 
 // Registers IDomainEventDispatcher plus every IDomainEventHandler<T> found in

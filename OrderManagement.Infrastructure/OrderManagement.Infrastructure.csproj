@@ -12,7 +12,4 @@
   <ItemGroup>
     <ProjectReference Include="..\OrderManagement.Domain\OrderManagement.Domain.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Outbox\" />
-  </ItemGroup>
 </Project>

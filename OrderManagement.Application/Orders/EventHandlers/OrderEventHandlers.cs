@@ -124,3 +124,15 @@ public sealed class NotifyManagerForApprovalHandler : IDomainEventHandler<OrderP
         return Task.CompletedTask;
     }
 }
+
+public sealed class PublishOrderPlacedIntegrationEventHandler : IDomainEventHandler<OrderPlacedEvent>
+{
+    private readonly IIntegrationEventPublisher _publisher;
+    public PublishOrderPlacedIntegrationEventHandler(IIntegrationEventPublisher publisher) => _publisher = publisher;
+
+    public Task HandleAsync(OrderPlacedEvent domainEvent, CancellationToken ct = default)
+    {
+        _publisher.Publish(new OrderUpdateEvent(domainEvent.OrderId, domainEvent.CustomerId, domainEvent.Total));
+        return Task.CompletedTask;
+    }
+}

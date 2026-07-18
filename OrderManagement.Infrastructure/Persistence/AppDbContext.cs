@@ -34,9 +34,6 @@ public sealed class AppDbContext : DbContext, IUnitOfWork
 
         foreach (var aggregate in aggregatesWithEvents)
         {
-            foreach (var domainEvent in aggregate.DomainEvents)
-                OutboxMessages.Add(new OutboxMessage(domainEvent));
-
             // Clear immediately, not after dispatch: dispatch now happens
             // later, out-of-process (OutboxProcessor), so there's nothing
             // left for this aggregate instance to hold onto. The outbox row

@@ -27,3 +27,10 @@ public sealed record OrderPendingApprovalEvent(OrderId OrderId, Guid CustomerId,
 {
     public DateTime OccurredOn { get; } = DateTime.UtcNow;
 }
+
+public sealed record OrderUpdateEvent(OrderId OrderId, Guid CustomerId, Money Total) : IIntegrationEvent
+{
+    public DateTime OccurredOn { get; } = DateTime.UtcNow;
+
+    public Guid Id => throw new NotImplementedException();
+}

@@ -65,7 +65,7 @@ public sealed class OutboxProcessor : BackgroundService
     {
         using var scope = _scopeFactory.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        var dispatcher = scope.ServiceProvider.GetRequiredService<IDomainEventDispatcher>();
+        var dispatcher = scope.ServiceProvider.GetRequiredService<IIntegrationEventDispatcher>();
 
         var batch = await db.OutboxMessages
             .Where(m => m.ProcessedOn == null && m.Attempts < MaxAttempts)

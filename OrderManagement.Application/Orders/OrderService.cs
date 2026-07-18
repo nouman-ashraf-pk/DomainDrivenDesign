@@ -110,13 +110,13 @@ public sealed class OrderService
     // (e.g. send a confirmation email when OrderPlacedEvent fires).
     private async Task PersistAndDispatch(Order order, CancellationToken ct)
     {
-        _orders.Update(order);
-        var events = order.DomainEvents.ToList(); // snapshot before SaveChanges clears it
-        await _unitOfWork.SaveChangesAsync(ct);
+        
 
         try
         {
-            await domainEventDispatcher.DispatchAsync(events, ct);
+            _orders.Update(order);
+            await domainEventDispatcher.DispatchAsync(order.DomainEvents, ct);
+            await _unitOfWork.SaveChangesAsync(ct);
         }
         catch (Exception ex)
         {
