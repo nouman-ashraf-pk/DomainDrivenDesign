@@ -14,7 +14,7 @@ public static class DomainEventTypeResolver
 {
     private static readonly Lazy<IReadOnlyDictionary<string, Type>> TypesByName = new(() =>
         typeof(IDomainEvent).Assembly.GetTypes()
-            .Where(t => t is { IsClass: true, IsAbstract: false } && typeof(IDomainEvent).IsAssignableFrom(t))
+            .Where(t => t is { IsClass: true, IsAbstract: false } && typeof(IIntegrationEvent).IsAssignableFrom(t))
             .ToDictionary(t => t.FullName!, t => t));
 
     public static Type Resolve(string typeName) =>

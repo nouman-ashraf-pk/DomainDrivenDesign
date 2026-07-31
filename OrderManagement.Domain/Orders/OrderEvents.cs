@@ -32,5 +32,5 @@ public sealed record OrderUpdateEvent(OrderId OrderId, Guid CustomerId, Money To
 {
     public DateTime OccurredOn { get; } = DateTime.UtcNow;
 
-    public Guid Id => throw new NotImplementedException();
+    public Guid Id { get; } = Guid.NewGuid();
 }
